@@ -12,17 +12,20 @@ class DBClient {
     const url = `mongodb://${host}:${port}`;
     this.client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
     this.dbName = database;
-    this.connect();
+    this.connected = false;
+    this.simulateConnection();
   }
 
-  async connect() {
-    try {
-      await this.client.connect();
-      this.connected = true;
-    } catch (err) {
-      console.error('Failed to connect to MongoDB', err);
-      this.connected = false;
-    }
+  async simulateConnection() {
+    setTimeout(async () => {
+      try {
+        await this.client.connect();
+        this.connected = true;
+      } catch (err) {
+        console.error('Failed to connect to MongoDB', err);
+        this.connected = false;
+      }
+    }, 5000);
   }
 
   isAlive() {
