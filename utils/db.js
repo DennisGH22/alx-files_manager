@@ -1,7 +1,4 @@
 const { MongoClient } = require('mongodb');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 class DBClient {
   constructor() {
