@@ -1,14 +1,8 @@
 const redis = require('redis');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 class RedisClient {
   constructor() {
-    this.client = redis.createClient({
-      host: process.env.REDIS_HOST || 'localhost',
-      port: process.env.REDIS_PORT || 6379,
-    });
+    this.client = redis.createClient();
 
     this.client.on('error', (err) => console.error('Redis client not connected to the server:', err));
   }
