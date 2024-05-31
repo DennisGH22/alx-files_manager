@@ -7,7 +7,7 @@ const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 const fileQueue = new Queue('fileQueue');
 
 class FilesController {
-  static uploadFile = async (req, res) => {
+  static postUpload = async (req, res) => {
     const { userId } = await userAuthObject.getUserIdAndRedisKey(req);
 
     if (!validateId.isValidId(userId)) {
