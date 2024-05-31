@@ -3,6 +3,8 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const dbClient = require('../utils/db');
 
+const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
+
 class FilesController {
   static async postUpload(req, res) {
     try {
@@ -53,12 +55,11 @@ class FilesController {
         return res.status(201).json(result.ops[0]);
       }
 
-      const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
+      if (!fs.existsSync(FOLDER_PATH)) {
+        fs.mkdirSync(FOLDER_PATH, { recursive: true });
       }
 
-      const localPath = path.join(folderPath, uuidv4());
+      const localPath = path.join(FOLDER_PATH, uuidv4());
       fs.writeFileSync(localPath, Buffer.from(data, 'base64'));
 
       newFile.localPath = localPath;
