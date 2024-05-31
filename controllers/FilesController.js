@@ -17,7 +17,7 @@ class FilesController {
         await fileQueue.add({});
     }
 
-    const user = await userAuthObject.getUser({ _id: ObjectId(userId) });
+    const user = await userAuthObject.getUserFromDb({ _id: ObjectId(userId) });
 
     if (!user) return res.status(401).send({ error: 'Unauthorized' });
 
@@ -49,7 +49,7 @@ class FilesController {
   static getFileDetails = async (req, res) => {
     const fileId = req.params.id;
     const { userId } = await userAuthObject.getUserIdAndRedisKey(req);
-    const user = await userAuthObject.getUser({ _id: ObjectId(userId) });
+    const user = await userAuthObject.getUserFromDb({ _id: ObjectId(userId) });
 
     if (!user) return res.status(401).send({ error: 'Unauthorized' });
 
@@ -68,7 +68,7 @@ class FilesController {
 
   static listFiles = async (req, res) => {
     const { userId } = await userAuthObject.getUserIdAndRedisKey(req);
-    const user = await userAuthObject.getUser({ _id: ObjectId(userId) });
+    const user = await userAuthObject.getUserFromDb({ _id: ObjectId(userId) });
 
     if (!user) return res.status(401).send({ error: 'Unauthorized' });
 
