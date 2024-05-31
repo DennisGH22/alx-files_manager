@@ -6,7 +6,7 @@ const dbClient = require('../utils/db');
 class AuthController {
   static async getConnect(req, res) {
     const authHeader = req.headers.authorization || '';
-    const base64Credentials = authHeader.split(' ')[1] || '';
+    const base64Credentials = authHeader.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
     const [email, password] = credentials.split(':');
 
