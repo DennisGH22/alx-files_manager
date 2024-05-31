@@ -29,12 +29,14 @@ class FilesController {
       return res.status(400).json({ error: 'Missing data' });
     }
 
-    const parentFile = await dbClient.collection('files').findOne({ _id: parentId });
-    if (parentId && !parentFile) {
-      return res.status(400).json({ error: 'Parent not found' });
-    }
-    if (parentId && parentFile && parentFile.type !== 'folder') {
-      return res.status(400).json({ error: 'Parent is not a folder' });
+    if (parentId !== 0) {
+      const parentFile = await dbClient.collection('files').findOne({ _id: parentId });
+      if (!parentFile) {
+        return res.status(400).json({ error: 'Parent not found' });
+      }
+      if (parentFile.type !== 'folder') {
+        return res.status(400).json({ error: 'Parent is not a folder' });
+      }
     }
 
     const fileDocument = {
