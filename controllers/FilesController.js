@@ -2,17 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const dbClient = require('../utils/db');
-
-const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
+const { getUserFromToken } = require('../utils/auth');
 
 class FilesController {
   static async postUpload(req, res) {
     try {
       const token = req.headers['x-token'];
-      if (!token) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-      const user = await dbClient.collection('users').findOne({ token });
+      const user = await getUserFromToken(token);
+
       if (!user) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
@@ -24,9 +21,11 @@ class FilesController {
       if (!name) {
         return res.status(400).json({ error: 'Missing name' });
       }
+
       if (!['folder', 'file', 'image'].includes(type)) {
         return res.status(400).json({ error: 'Missing type' });
       }
+
       if (type !== 'folder' && !data) {
         return res.status(400).json({ error: 'Missing data' });
       }
@@ -55,11 +54,12 @@ class FilesController {
         return res.status(201).json(result.ops[0]);
       }
 
-      if (!fs.existsSync(FOLDER_PATH)) {
-        fs.mkdirSync(FOLDER_PATH, { recursive: true });
+      const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
       }
 
-      const localPath = path.join(FOLDER_PATH, uuidv4());
+      const localPath = path.join(folderPath, uuidv4());
       fs.writeFileSync(localPath, Buffer.from(data, 'base64'));
 
       newFile.localPath = localPath;
